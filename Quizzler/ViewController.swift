@@ -38,19 +38,23 @@ class ViewController: UIViewController {
         }
         
         checkAnswer()
-        
-        questionNumber += 1
-        questionLabel.text = allQuestions.list[questionNumber].questionText
+        nextQuestion()
     }
     
     
     func updateUI() {
-      
+        questionLabel.text = allQuestions.list[questionNumber].questionText
     }
     
 
     func nextQuestion() {
-        
+        questionNumber += 1
+        if questionNumber <= 11 {
+            updateUI()
+        }
+        else {
+            startOver()
+        }
     }
     
     
@@ -66,7 +70,9 @@ class ViewController: UIViewController {
     
     
     func startOver() {
-       
+        print("End of Quiz! Resetting.")
+        questionNumber = 0
+        updateUI()
     }
     
 
