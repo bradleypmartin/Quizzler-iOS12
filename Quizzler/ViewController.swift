@@ -13,6 +13,7 @@ class ViewController: UIViewController {
     let allQuestions = QuestionBank()
     var pickedAnswer : Bool = false
     var questionNumber : Int = 0
+    var score : Int = 0
     
     @IBOutlet weak var questionLabel: UILabel!
     @IBOutlet weak var scoreLabel: UILabel!
@@ -23,11 +24,8 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         
         // creating our first question
-        let firstQuestion = allQuestions.list[questionNumber]
-        questionLabel.text = firstQuestion.questionText
-        
+        updateUI()
     }
-
 
     @IBAction func answerPressed(_ sender: AnyObject) {
         if sender.tag == 1 {
@@ -36,45 +34,53 @@ class ViewController: UIViewController {
         else if sender.tag == 2 {
             pickedAnswer = false
         }
-        
         checkAnswer()
         nextQuestion()
     }
     
-    
     func updateUI() {
         questionLabel.text = allQuestions.list[questionNumber].questionText
+        scoreLabel.text = "Score: \(score)"
+        progressLabel.text = "\(questionNumber+1) / 12"
+        progressBar.frame.size.width = (view.frame.size.width / 12) * CGFloat(questionNumber+1)
     }
     
-
     func nextQuestion() {
         questionNumber += 1
         if questionNumber <= 11 {
             updateUI()
         }
         else {
-            startOver()
+            let alert = UIAlertController(title: "Awesome",
+                                          message: "You've finished the quiz; start over?",
+                                          preferredStyle: .alert)
+            let restartAction = UIAlertAction(title: "Restart",
+                                              style: .default,
+                                              handler: { (UIAlertAction) in
+                                                self.startOver()
+            })
+            alert.addAction(restartAction)
+            present(alert, animated: true, completion: nil)
         }
     }
-    
     
     func checkAnswer() {
         let correctAnswer = allQuestions.list[questionNumber].answer
         if correctAnswer == pickedAnswer {
+            score += 1
             print("You got it!")
         }
         else {
             print("Incorrect!")
         }
+        updateUI()
     }
-    
     
     func startOver() {
         print("End of Quiz! Resetting.")
         questionNumber = 0
+        score = 0
         updateUI()
     }
-    
 
-    
 }
